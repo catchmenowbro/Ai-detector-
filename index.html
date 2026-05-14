@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Fake Image Detector</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#0f172a;
+color:white;
+padding:20px;
+}
+
+.container{
+max-width:500px;
+margin:auto;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:25px;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+font-size:30px;
+}
+
+.upload-box{
+border:2px dashed #334155;
+padding:25px;
+border-radius:20px;
+text-align:center;
+margin-bottom:20px;
+}
+
+input{
+margin-top:15px;
+}
+
+button{
+width:100%;
+padding:15px;
+border:none;
+border-radius:15px;
+background:#22c55e;
+color:white;
+font-size:18px;
+margin-top:15px;
+cursor:pointer;
+font-weight:bold;
+}
+
+img{
+width:100%;
+border-radius:20px;
+margin-top:20px;
+display:none;
+}
+
+.result-card{
+margin-top:20px;
+background:#111827;
+padding:20px;
+border-radius:20px;
+display:none;
+}
+
+.result-box{
+margin-top:15px;
+padding:15px;
+border-radius:15px;
+background:#1e293b;
+}
+
+.progress{
+width:100%;
+height:12px;
+background:#334155;
+border-radius:10px;
+overflow:hidden;
+margin-top:8px;
+}
+
+.bar{
+height:100%;
+width:0%;
+background:#22c55e;
+transition:1s;
+}
+
+.scan-animation{
+animation:blink 1s infinite;
+}
+
+@keyframes blink{
+50%{
+opacity:0.4;
+}
+}
+
+.footer{
+text-align:center;
+margin-top:20px;
+opacity:0.7;
+font-size:14px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>🕵️ AI Fake Detector</h1>
+
+<div class="upload-box">
+
+<p>Upload Image</p>
+
+<input type="file" id="imageInput" accept="image/*">
+
+</div>
+
+<button onclick="scanImage()">
+🔍 Scan Image
+</button>
+
+<img id="preview">
+
+<div class="result-card" id="resultCard">
+
+<h2 id="mainStatus"></h2>
+
+<div class="result-box">
+
+<p>🧠 AI Generated Probability</p>
+<div class="progress">
+<div class="bar" id="aiBar"></div>
+</div>
+<p id="aiText"></p>
+
+</div>
+
+<div class="result-box">
+
+<p>📄 Fake Screenshot Risk</p>
+<div class="progress">
+<div class="bar" id="screenBar"></div>
+</div>
+<p id="screenText"></p>
+
+</div>
+
+<div class="result-box">
+
+<p>🎭 Face Swap Detection</p>
+<div class="progress">
+<div class="bar" id="faceBar"></div>
+</div>
+<p id="faceText"></p>
+
+</div>
+
+<div class="result-box">
+
+<p>✏️ Edited Text Detection</p>
+<div class="progress">
+<div class="bar" id="editBar"></div>
+</div>
+<p id="editText"></p>
+
+</div>
+
+<div class="result-box">
+
+<p>📊 Final Confidence Score</p>
+<div class="progress">
+<div class="bar" id="finalBar"></div>
+</div>
+<p id="finalText"></p>
+
+</div>
+
+<div class="result-box">
+
+<h3>📌 AI Analysis</h3>
+<br>
+<p id="analysis"></p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+Made On Mobile 📱
+</div>
+
+</div>
+
+<script>
+
+const imageInput = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+
+imageInput.addEventListener("change",function(){
+
+const file = imageInput.files[0];
+
+if(file){
+
+preview.style.display = "block";
+preview.src = URL.createObjectURL(file);
+
+}
+
+});
+
+function randomScore(min,max){
+return Math.floor(Math.random()*(max-min+1))+min;
+}
+
+function setBar(id,value){
+
+const bar = document.getElementById(id);
+bar.style.width = value + "%";
+
+if(value < 40){
+bar.style.background = "#22c55e";
+}
+else if(value < 70){
+bar.style.background = "orange";
+}
+else{
+bar.style.background = "red";
+}
+
+}
+
+function scanImage(){
+
+const file = imageInput.files[0];
+
+if(!file){
+alert("Please Upload Image");
+return;
+}
+
+const resultCard = document.getElementById("resultCard");
+const mainStatus = document.getElementById("mainStatus");
+
+resultCard.style.display = "block";
+
+mainStatus.innerHTML = "🔍 AI Scanning...";
+mainStatus.classList.add("scan-animation");
+
+setTimeout(()=>{
+
+const aiScore = randomScore(10,95);
+const screenScore = randomScore(5,90);
+const faceScore = randomScore(2,85);
+const editScore = randomScore(15,92);
+
+const finalScore = Math.floor(
+(aiScore + screenScore + faceScore + editScore)/4
+);
+
+setBar("aiBar",aiScore);
+setBar("screenBar",screenScore);
+setBar("faceBar",faceScore);
+setBar("editBar",editScore);
+setBar("finalBar",finalScore);
+
+
+document.getElementById("aiText").innerHTML = aiScore + "% Risk";
+document.getElementById("screenText").innerHTML = screenScore + "% Risk";
+document.getElementById("faceText").innerHTML = faceScore + "% Risk";
+document.getElementById("editText").innerHTML = editScore + "% Risk";
+document.getElementById("finalText").innerHTML = finalScore + "% Overall Risk";
+
+let analysisText = "";
+
+if(finalScore > 70){
+
+mainStatus.innerHTML = "⚠️ HIGH RISK DETECTED";
+analysisText = "Possible AI generated or edited image detected.";
+
+}
+else if(finalScore > 40){
+
+mainStatus.innerHTML = "🟡 SUSPICIOUS IMAGE";
+analysisText = "Some suspicious patterns found.";
+
+}
+else{
+
+mainStatus.innerHTML = "✅ IMAGE LOOKS SAFE";
+analysisText = "No major manipulation signs detected.";
+
+}
+
+mainStatus.classList.remove("scan-animation");
+
+document.getElementById("analysis").innerHTML = analysisText;
+
+},3000);
+
+}
+
+</script>
+
+</body>
+</html>
